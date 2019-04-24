@@ -66,21 +66,21 @@ SET first_name = replace(first_name,"HARPO", "GROUCHO");
 -- 5a
 show create table address;
 
-'CREATE TABLE `address` (
-  `address_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `address` varchar(50) NOT NULL,
-  `address2` varchar(50) DEFAULT NULL,
-  `district` varchar(20) NOT NULL,
-  `city_id` smallint(5) unsigned NOT NULL,
-  `postal_code` varchar(10) DEFAULT NULL,
-  `phone` varchar(20) NOT NULL,
-  `location` geometry NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`address_id`),
-  KEY `idx_fk_city_id` (`city_id`),
-  SPATIAL KEY `idx_location` (`location`),
-  CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8'
+-- 'CREATE TABLE `address` (
+--   `address_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+--   `address` varchar(50) NOT NULL,
+--   `address2` varchar(50) DEFAULT NULL,
+--   `district` varchar(20) NOT NULL,
+--   `city_id` smallint(5) unsigned NOT NULL,
+--   `postal_code` varchar(10) DEFAULT NULL,
+--   `phone` varchar(20) NOT NULL,
+--   `location` geometry NOT NULL,
+--   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   PRIMARY KEY (`address_id`),
+--   KEY `idx_fk_city_id` (`city_id`),
+--   SPATIAL KEY `idx_location` (`location`),
+--   CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
+-- ) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8'
 
 -- 6a 
 select staff.last_name, staff.first_name, address.address
@@ -163,4 +163,31 @@ group by film.title
 order by total_rentals desc;
 
 -- 7f
+select store.store_id as 'Store Number', sum(payment.amount) as 'Total Sales'
+from store
+inner join staff on store.store_id = staff.store_id
+inner join payment on payment.staff_id = staff.staff_id
+group by store.store_id;
+
+-- 7g
+select store.store_id as 'Store ID', city.city, country.country
+from store
+join address on address.address_id = store.address_id
+join city on city.city_id = address.city_id
+join country on city.country_id = country.country_id;
+
+-- 7h
+-- List the top five genres in gross revenue in descending order. 
+-- (Hint: you may need to use the following tables: category, 
+-- film_category, inventory, payment, and rental.)
+
+select category.name, sum(payment.amount) as 'Total Revenue'
+from category
+inner join payment on payment.rental_id = rental.rental_id
+inner join category on film_category.category_id = category.category_id
+join film_category on film_category.film_id = inventory.film_id
+join inventory on rental.inventory_id = inventory.inventory_id
+
+
+
 
