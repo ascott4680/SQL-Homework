@@ -100,13 +100,13 @@ inner join film_actor on film_actor.film_id = film.film_id
 group by film.title;
 
 -- 6d
-select film.title, sum(inventory.film_id) as total_copies
+select film.title, count(inventory.film_id) as total_copies
 from film
 inner join inventory on film.film_id = inventory.film_id
 where title='Hunchback Impossible'
 group by film.title;
 
--- 6d There are 2,634 copies of Hunchback Impossible --
+-- 6d There are 6 copies of Hunchback Impossible --
 
 -- 6e
 select customer.first_name, customer.last_name, sum(payment.amount) as 'Total Amount Paid'
